@@ -1,34 +1,35 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller } from '@nestjs/common';
+import { MessagePattern, Payload } from '@nestjs/microservices';
 import { MoviesService } from './movies.service';
 import { CreateMovieDto } from './dto/create-movie.dto';
 import { UpdateMovieDto } from './dto/update-movie.dto';
 
-@Controller('movies')
+@Controller()
 export class MoviesController {
   constructor(private readonly moviesService: MoviesService) {}
 
-  @Post()
-  create(@Body() createMovieDto: CreateMovieDto) {
+  @MessagePattern('movies.create')
+  create(@Payload() createMovieDto: CreateMovieDto) {
     return this.moviesService.create(createMovieDto);
   }
 
-  @Get()
+  @MessagePattern('movies.findAll')
   findAll() {
     return this.moviesService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.moviesService.findOne(+id);
+  @MessagePattern('movies.findOne')
+  findOne(@Payload() id: number) {
+    return this.moviesService.findOne(id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateMovieDto: UpdateMovieDto) {
-    return this.moviesService.update(+id, updateMovieDto);
+  @MessagePattern('movies.update')
+  update(@Payload() payload: { id: number; updateMovieDto: UpdateMovieDto }) {
+    return this.moviesService.update(payload.id, payload.updateMovieDto);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.moviesService.remove(+id);
+  @MessagePattern('movies.remove')
+  remove(@Payload() id: number) {
+    return this.moviesService.remove(id);
   }
 }
