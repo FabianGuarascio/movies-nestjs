@@ -16,4 +16,10 @@ export class Movie {
 
   @Column('decimal', { precision: 3, scale: 1 })
   rating!: number;
+
+  @Column('decimal', { precision: 5, scale: 2, default: 0 })
+  averageRating: number = 0;
+
+  @Column({ default: 0 })
+  ratingCount: number = 0;
 }
