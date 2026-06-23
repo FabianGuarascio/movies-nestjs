@@ -9,7 +9,7 @@ import { Movie } from './movies/entities/movie.entity';
   imports: [
     TypeOrmModule.forRoot({
       type: 'better-sqlite3',
-      database: 'movies.db',
+      database: process.env.DB_PATH ?? 'movies.db',
       entities: [Movie],
       synchronize: true,
     }),

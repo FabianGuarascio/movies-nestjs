@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import { NestFactory } from '@nestjs/core';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import { AppModule } from './app.module';
@@ -7,7 +8,7 @@ async function bootstrap() {
 
   app.connectMicroservice<MicroserviceOptions>({
     transport: Transport.TCP,
-    options: { port: 3001 },
+    options: { port: parseInt(process.env.TCP_PORT ?? '3001', 10) },
   });
 
   app.connectMicroservice<MicroserviceOptions>({
@@ -15,7 +16,7 @@ async function bootstrap() {
     options: {
       client: {
         clientId: 'movies-nestjs-consumer',
-        brokers: ['localhost:9092'],
+        brokers: (process.env.KAFKA_BROKERS ?? 'localhost:9092').split(','),
       },
       consumer: {
         groupId: 'movies-consumer',
