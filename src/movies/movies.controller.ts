@@ -1,5 +1,5 @@
 import { Controller } from '@nestjs/common';
-import { EventPattern, MessagePattern, Payload } from '@nestjs/microservices';
+import { MessagePattern, Payload } from '@nestjs/microservices';
 import { MoviesService } from './movies.service';
 import { CreateMovieDto } from './dto/create-movie.dto';
 import { UpdateMovieDto } from './dto/update-movie.dto';
@@ -33,8 +33,9 @@ export class MoviesController {
     return this.moviesService.remove(id);
   }
 
-  @EventPattern('rating.added')
-  handleRatingAdded(@Payload() data: { movieId: number; score: number }) {
-    return this.moviesService.updateAverageRating(data.movieId, data.score);
+  @MessagePattern('movies.updateAverageRating')
+  async updateAverageRating(@Payload() data: { movieId: number; score: number }) {
+    await this.moviesService.updateAverageRating(data.movieId, data.score);
+    return { ok: true };
   }
 }
